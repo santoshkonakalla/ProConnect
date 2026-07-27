@@ -1,0 +1,157 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useUser } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
+import { IConversation } from "@/types/message";
+import ConversationList from "./ConversationList";
+import ConversationView from "./ConversationView";
+import { MessageCircle, Users } from "lucide-react";
+
+interface MessagesPageClientProps {
+  initialConversations: IConversation[];
+}
+
+export default function MessagesPageClient({ initialConversations }: MessagesPageClientProps) {
+  const { user: _user } = useUser();
+  const [conversations, setConversations] = useState<IConversation[]>(initialConversations);
+  const [selectedConversation, setSelectedConversation] = useState<IConversation | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // Auto-select conversation when ?user=<id> present; create stub if needed for mutual follow
+  useEffect(() => {
+    const targetUserId = searchParams.get('user');
+    if (!targetUserId) return;
+    if (selectedConversation?.other_user_id === targetUserId) return;
+
+    // Try to find existing conversation
+    let convo = conversations.find(c => c.other_user_id === targetUserId);
+    if (convo) {
+      setSelectedConversation(convo);
+      return;
+    }
+
+    // If not found, fetch/ensure conversation exists via API conversations endpoint
+    (async () => {
+      try {
+        const res = await fetch('/api/messages');
+        if (res.ok) {
+          const data = await res.json();
+          setConversations(data.conversations);
+          convo = data.conversations.find((c: IConversation) => c.other_user_id === targetUserId);
+          if (convo) setSelectedConversation(convo);
+        }
+      } catch (e) {
+        console.error('Failed to load conversations for preselect', e);
+      }
+    })();
+  }, [searchParams, conversations, selectedConversation]);
+
+  // Clean URL (optional) after selection to avoid stale share links
+  useEffect(() => {
+    if (selectedConversation) {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('user')) {
+        params.delete('user');
+        const newUrl = window.location.pathname + (params.size ? `?${params.toString()}` : '');
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+  }, [selectedConversation]);
+
+  const handleConversationSelect = (conversation: IConversation) => {
+    setSelectedConversation(conversation);
+  };
+
+  const handleBackToList = () => {
+    setSelectedConversation(null);
+  };
+
+  const updateConversation = (updatedConversation: IConversation) => {
+    setConversations(prev => 
+      prev.map(conv => 
+        conv.id === updatedConversation.id ? updatedConversation : conv
+      )
+    );
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-center justify-between py-4 will-animate fade-up" style={{animationDelay:'0ms'}}>
+        <div className="flex items-center space-x-4">
+          <MessageCircle className="h-10 w-10 text-purple-500" />
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">Messages</h1>
+            <p className="text-gray-400 text-lg">Connect with people you follow</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2 text-sm text-gray-400">
+          <Users className="h-4 w-4" />
+          <span>Only mutual followers can message</span>
+        </div>
+      </div>
+
+      {/* Messages Container */}
+  <div className="surface-card glow overflow-hidden min-h-[600px] will-animate fade-up" style={{animationDelay:'120ms'}}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 h-[600px]">
+          {/* Conversations List */}
+          <div className={`lg:col-span-1 border-r border-[#3f3f46] ${selectedConversation ? 'hidden lg:block' : ''}`}>
+            <ConversationList 
+              conversations={conversations}
+              onConversationSelect={handleConversationSelect}
+              selectedConversation={selectedConversation}
+            />
+          </div>
+
+          {/* Conversation View */}
+          <div className={`lg:col-span-2 ${!selectedConversation ? 'hidden lg:block' : ''}`}>
+            {selectedConversation ? (
+              <ConversationView 
+                conversation={selectedConversation}
+                onBack={handleBackToList}
+                onConversationUpdate={updateConversation}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <MessageCircle className="h-16 w-16 text-gray-500 mx-auto mb-4" />
+                  <h3 className="text-xl font-medium text-white mb-2">
+                    Select a conversation
+                  </h3>
+                  <p className="text-gray-400">
+                    Choose a conversation from the list to start messaging
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Empty State */}
+      {conversations.length === 0 && (
+        <div className="text-center py-16 will-animate fade-up" style={{animationDelay:'240ms'}}>
+          <MessageCircle className="h-20 w-20 text-gray-500 mx-auto mb-6" />
+          <h3 className="text-xl font-medium text-white mb-3">
+            No conversations yet
+          </h3>
+          <p className="text-gray-400 mb-6 text-lg max-w-md mx-auto">
+            Start messaging by visiting someone's profile and sending them a message. 
+            Remember, you can only message people you mutually follow.
+          </p>
+          <Button
+            onClick={() => window.location.href = '/'}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 text-base h-12"
+          >
+            <Users className="h-5 w-5 mr-3" />
+            Find People to Follow
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
