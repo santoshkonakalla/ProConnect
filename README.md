@@ -1,36 +1,171 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProConnect
 
-## Getting Started
+ProConnect is a professional networking platform that enables users to connect, share posts, discover job opportunities, build communities, and communicate with other professionals. The application provides an interactive environment for students, professionals, and organizations to network and collaborate.
 
-First, run the development server:
+## Features
+
+- User Authentication
+- User Profile Management
+- Create, Edit, and Delete Posts
+- Like, Unlike, and Save Posts
+- Comment on Posts
+- Follow and Unfollow Users
+- Professional News Feed
+- Job Portal
+- Community Management
+- Community Events
+- Real-Time Messaging
+- Education Management
+- User Search
+- Responsive User Interface
+
+## Technology Stack
+
+### Frontend
+
+- Next.js
+- React.js
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+
+### Backend
+
+- Next.js API Routes
+- Clerk Authentication
+
+### Database
+
+- PostgreSQL (Neon)
+
+### Additional Tools
+
+- Git
+- GitHub
+- Vercel
+- Resend Email API
+
+## Project Structure
+
+```
+ProConnect
+│
+├── actions
+├── app
+├── components
+├── database
+├── lib
+├── public
+├── types
+├── middleware.ts
+├── package.json
+└── README.md
+```
+
+## Installation
+
+Clone the repository
+
+```bash
+git clone https://github.com/santoshkonakalla/ProConnect.git
+```
+
+Navigate to the project folder
+
+```bash
+cd ProConnect
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the application in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment Variables
 
-## Learn More
+Create a `.env.local` file in the project root and add the following variables.
 
-To learn more about Next.js, take a look at the following resources:
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+CLERK_SECRET_KEY=
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+DATABASE_URL=
 
-## Deploy on Vercel
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+RESEND_API_KEY=
+```
+
+## Screenshots
+
+Add screenshots of the following pages:
+
+- Home Page
+- Login Page
+- User Profile
+- Communities
+- Job Portal
+- Messages
+
+## Future Enhancements
+
+- Video Calling
+- Notifications
+- Dark Mode
+- AI Job Recommendations
+- AI Content Suggestions
+- Resume Builder
+- Mobile Application
+
+## Contributing
+
+1. Fork the repository.
+2. Create a new feature branch.
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit your changes.
+
+```bash
+git commit -m "Added new feature"
+```
+
+4. Push your changes.
+
+```bash
+git push origin feature-name
+```
+
+5. Create a Pull Request.
+
+## License
+
+This project is developed for educational and learning purposes.
+
+## Author
+
+Santosh Konakalla
+
+GitHub: https://github.com/santoshkonakalla
