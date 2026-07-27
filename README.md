@@ -116,17 +116,6 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 RESEND_API_KEY=
 ```
 
-## Screenshots
-
-Add screenshots of the following pages:
-
-- Home Page
-- Login Page
-- User Profile
-- Communities
-- Job Portal
-- Messages
-
 ## Future Enhancements
 
 - Video Calling
